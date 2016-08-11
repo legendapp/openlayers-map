@@ -1,0 +1,97 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`openlayers-map`
+Displays a full bleed openlayers map
+
+@demo demo/index.html 
+-->
+
+<dom-module id="openlayers-map">
+  <template>
+    <link rel="stylesheet" href="http://openlayers.org/en/v3.17.1/css/ol.css" type="text/css">
+    <style>
+      :host {
+        display: block;
+      }
+
+      .map {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+    </style>
+
+    <div id="map" class="map"></div>
+  </template>
+
+  <script src="http://openlayers.org/en/v3.17.1/build/ol.js" type="text/javascript"></script>
+  <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
+
+  <script>
+    Polymer({
+
+      is: 'openlayers-map',
+
+      properties: {
+        position: {
+          type: Object,
+          value: {
+            "latitude": 42.5747630,
+            "longitude": -70.7741700
+          },
+        },
+        draggable: {
+          type: Boolean,
+          value: true
+        },
+        zoom: {
+          type: Number,
+          value: 15
+        },
+        stamenMap: {
+          type: String,
+          value: "watercolor"
+        }
+      },
+
+      ready: function() {
+        window.addEventListener('WebComponentsReady', (function(e) {
+          var map = new ol.Map({
+            target: 'map',
+            interactions: ol.interaction.defaults({
+                // doubleClickZoom :false,
+                dragAndDrop: false,
+                dragPan: this.draggable,
+                keyboardPan: false,
+                keyboardZoom: false,
+                // mouseWheelZoom: false,
+                pointer: false,
+                select: false
+            }),
+            layers: [
+              new ol.layer.Tile({
+                source: new ol.source.Stamen({
+                  layer: this.stamenMap
+                })
+              }),
+              new ol.layer.Vector({
+                  title: 'What3Words GeoJSON',
+                  source: new ol.source.GeoJSON({
+                     projection : 'EPSG:4326',
+                     url: 'https://api.what3words/com/v2/grid?key=50RP3AKL'
+                  })
+              })
+            ],
+            view: new ol.View({
+              center: ol.proj.fromLonLat([this.position.longitude, this.position.latitude]),
+              zoom: this.zoom
+            })
+          });          
+        }).bind(this));
+      }
+    });
+  </script>
+</dom-module>
