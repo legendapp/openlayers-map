@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="stylesheet" href="http://openlayers.org/en/v3.17.1/css/ol.css" type="text/css">
 
 <!--
 `openlayers-map`
@@ -9,7 +10,6 @@ Displays a full bleed openlayers map
 
 <dom-module id="openlayers-map">
   <template>
-    <link rel="stylesheet" href="http://openlayers.org/en/v3.17.1/css/ol.css" type="text/css">
     <style>
       :host {
         display: block;
@@ -58,39 +58,30 @@ Displays a full bleed openlayers map
       },
 
       ready: function() {
-        window.addEventListener('WebComponentsReady', (function(e) {
-          var map = new ol.Map({
-            target: 'map',
-            interactions: ol.interaction.defaults({
-                // doubleClickZoom :false,
-                dragAndDrop: false,
-                dragPan: this.draggable,
-                keyboardPan: false,
-                keyboardZoom: false,
-                // mouseWheelZoom: false,
-                pointer: false,
-                select: false
-            }),
-            layers: [
-              new ol.layer.Tile({
-                source: new ol.source.Stamen({
-                  layer: this.stamenMap
-                })
-              }),
-              new ol.layer.Vector({
-                  title: 'What3Words GeoJSON',
-                  source: new ol.source.GeoJSON({
-                     projection : 'EPSG:4326',
-                     url: 'https://api.what3words/com/v2/grid?key=50RP3AKL'
-                  })
+        var map = new ol.Map({
+          target: this.$.map,
+          interactions: ol.interaction.defaults({
+              // doubleClickZoom :false,
+              dragAndDrop: false,
+              dragPan: this.draggable,
+              keyboardPan: false,
+              keyboardZoom: false,
+              // mouseWheelZoom: false,
+              pointer: false,
+              select: false
+          }),
+          layers: [
+            new ol.layer.Tile({
+              source: new ol.source.Stamen({
+                layer: this.stamenMap
               })
-            ],
-            view: new ol.View({
-              center: ol.proj.fromLonLat([this.position.longitude, this.position.latitude]),
-              zoom: this.zoom
             })
-          });          
-        }).bind(this));
+          ],
+          view: new ol.View({
+            center: ol.proj.fromLonLat([this.position.longitude, this.position.latitude]),
+            zoom: this.zoom
+          })
+        });
       }
     });
   </script>
