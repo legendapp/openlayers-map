@@ -135,6 +135,10 @@ Displays a full bleed openlayers map
         });
 
         this.push('features', { longitude: 42.5747630, latitude: -70.7741700 });
+
+        this.osm = new OSMBuildings(this.map);
+        this.osm.date(new Date())
+        this.osm.load();
       },
 
       ready: function() {
