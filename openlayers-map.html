@@ -65,7 +65,7 @@ Displays a full bleed openlayers map
         "clearAndRenderMarkers(features.*, map)"
       ],
 
-      clearAndRenderMarkers(splices) {
+      clearAndRenderMarkers: function(splices) {
         if(!this.features || !this.map) return;
 
         var iconFeatures=[];
@@ -101,7 +101,7 @@ Displays a full bleed openlayers map
         this.map.addLayer(this.featuresLayer);
       },
 
-      recenterMap(position) {
+      recenterMap: function(position) {
         if(!this.map || !this.position) return;
 
         var coords = [this.position.coords.longitude, this.position.coords.latitude];
