@@ -5,7 +5,7 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
     "ol3": "openlayers3-dist#^3.17.1",
-    "osmbuildings": "*"
+    "osmbuildings": "https://github.com/legendapp/osmbuildings.git"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
