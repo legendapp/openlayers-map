@@ -7,7 +7,6 @@ Displays a full bleed openlayers map
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="openlayers-import.html">
-<!-- <link rel="import" href="osmbuildings-import.html"> -->
 <link rel="import" href="stamen-import.html">
 
 <dom-module id="openlayers-map">
@@ -126,8 +125,6 @@ Displays a full bleed openlayers map
           features: (new ol.format.GeoJSON()).readFeatures(this.features, {featureProjection: 'EPSG:3857'})
         });
 
-        console.log(vectorSource.getProjection());
-
         var styleFunction = function(feature) {
           return styles[feature.getGeometry().getType()];
         };
@@ -185,10 +182,6 @@ Displays a full bleed openlayers map
         // this.updateImageData();
 
         // this.push('features', { longitude: 42.5747630, latitude: -70.7741700 });
-
-        // this.osm = new OSMBuildings(this.map);
-        // this.osm.date(new Date())
-        // this.osm.load();
       },
 
       ready: function() {
