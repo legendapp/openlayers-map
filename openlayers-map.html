@@ -168,12 +168,10 @@ Displays a full bleed openlayers map
           this.updateImageData();
         }).bind(this));
 
+        // Fix for Firefox and other browsers that require a window resize event
         setTimeout((function() {
           this.map.updateSize();
         }).bind(this), 200);
-        // this.updateImageData();
-
-        // this.push('features', { longitude: 42.5747630, latitude: -70.7741700 });
       },
 
       ready: function() {
