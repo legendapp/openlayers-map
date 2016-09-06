@@ -98,7 +98,13 @@ Displays a full bleed openlayers map
         var styles = {
           'Point': new ol.style.Style({
             image: image
-          })
+          }),
+          'LineString': new ol.style.Style({
+            stroke: new ol.style.Stroke({
+              color: 'red',
+              width: 2
+            })
+          }),
         };
 
         var vectorSource = new ol.source.Vector({
