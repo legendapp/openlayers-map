@@ -77,12 +77,14 @@ Displays a full bleed openlayers map
       ],
 
       tileSelection: function(stamenMap ) {
+        if(!this.map) return;
+
         this.map.removeLayer(this.tileLayer);
         this.tileLayer = new ol.layer.Tile({
-              source: new ol.source.Stamen({
-                layer: this.stamenMap
-              })
-            })
+          source: new ol.source.Stamen({
+            layer: this.stamenMap
+          })
+        });
         this.map.addLayer(this.tileLayer);
 
         this.clearAndRenderMarkers();
