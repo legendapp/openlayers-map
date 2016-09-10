@@ -55,35 +55,48 @@ Displays a full bleed openlayers map
         },
         stamenMap: {
           type: String,
-          value: "watercolor"
+          notify: true
         },
         features: {
           type: Array,
           value: []
         },
         map: Object,
-        imageData: {
-          type: String,
-          notify: true,
-          reflectToAttribute: true,
-          value: "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-        },
+        // imageData: {
+        //   type: String,
+        //   notify: true,
+        //   reflectToAttribute: true,
+        //   value: "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        // },
       },
 
       observers: [
         "recenterMap(position)",
-        "clearAndRenderMarkers(features.features.*, map)"
+        "clearAndRenderMarkers(features.features.*, map)",
+        "tileSelection(stamenMap)"
       ],
 
-      updateImageData: function() {
-        setTimeout((function() {
-          this.map.once('postcompose', (function(event) {
-            var canvas = event.context.canvas;
-            this.set('imageData', canvas.toDataURL('image/png'));
-          }).bind(this));
+      tileSelection: function(stamenMap ) {
+        this.map.removeLayer(this.tileLayer);
+        this.tileLayer = new ol.layer.Tile({
+              source: new ol.source.Stamen({
+                layer: this.stamenMap
+              })
+            })
+        this.map.addLayer(this.tileLayer);
 
-          this.map.renderSync();
-        }).bind(this), 1000)
+        this.clearAndRenderMarkers();
+      },
+
+      updateImageData: function() {
+        // setTimeout((function() {
+        //   this.map.once('postcompose', (function(event) {
+        //     var canvas = event.context.canvas;
+        //     this.set('imageData', canvas.toDataURL('image/png'));
+        //   }).bind(this));
+
+        //   this.map.renderSync();
+        // }).bind(this), 1000)
       },
 
       clearAndRenderMarkers: function(splices) {
@@ -136,7 +149,7 @@ Displays a full bleed openlayers map
       },
 
       _initMap: function() {
-        this.$.map.style.height = (window.innerHeight - 64) + 'px';
+        this.$.map.style.height = window.innerHeight + 'px';
 
         this.map = new ol.Map({
           // renderer:'canvas',
@@ -152,13 +165,7 @@ Displays a full bleed openlayers map
               pointer: false,
               select: false
           }),
-          layers: [
-            new ol.layer.Tile({
-              source: new ol.source.Stamen({
-                layer: this.stamenMap
-              })
-            })
-          ],
+          layers: [],
           view: new ol.View({
             center: ol.proj.fromLonLat([
               this.position.coords.longitude,
