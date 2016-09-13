@@ -183,6 +183,14 @@ Displays a full bleed openlayers map
           this.updateImageData();
         }).bind(this));
 
+        this.map.on("click",
+          (function(e) {
+            this.map.forEachFeatureAtPixel(e.pixel,
+              function (feature, layer) {
+                this.fire("marker-tap", feature);
+            }.bind(this))
+          }).bind(this));
+
         // Fix for Firefox and other browsers that require a window resize event
         setTimeout((function() {
           this.map.updateSize();
@@ -192,6 +200,9 @@ Displays a full bleed openlayers map
       ready: function() {
         // window.addEventListener('WebComponentsReady', this._initMap.bind(this));
         this._initMap();
+      },
+      markerTap: function () {
+        this.fire ('markerTap');
       }
     });
   </script>
