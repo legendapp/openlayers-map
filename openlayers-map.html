@@ -153,7 +153,6 @@ Displays a full bleed openlayers map
           projection[0] - (projection[0] * 0.000075),  // east
           projection[1] + (projection[1] * 0.0001)   // north
         ];
-        console.log(calculatedExtent);
 
         var view = new ol.View({
           center: projection,
@@ -164,6 +163,38 @@ Displays a full bleed openlayers map
         });
 
         this.map.setView(view);
+
+        this.addGeolocationLayer();
+      },
+
+      addGeolocationLayer: function() {
+        var image = new ol.style.Circle({
+          radius: 3,
+          fill: new ol.style.Fill({color: "#0032bd"}),
+          stroke: new ol.style.Stroke({color: '#0032bd', width: 1})
+        });
+        console.log(this.position.coords);
+
+        var iconFeature = new ol.Feature({
+          geometry: new ol.geom.Point(ol.proj.transform([
+            this.position.coords.longitude,
+            this.position.coords.latitude
+          ], 'EPSG:4326', 'EPSG:3857'))
+        });
+
+        var vectorSource = new ol.source.Vector({
+          features: [iconFeature]
+        });
+        var iconStyle = new ol.style.Style({
+          image: image
+        })
+
+        this.map.removeLayer(this.geolocationLayer);
+        this.geolocationLayer = new ol.layer.Vector({
+          source: vectorSource,
+          style: iconStyle
+        });
+        this.map.addLayer(this.geolocationLayer);
       },
 
       _initMap: function() {
