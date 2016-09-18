@@ -102,15 +102,12 @@ Displays a full bleed openlayers map
         if(!this.features || !this.map) return;
 
         var image = new ol.style.Circle({
-          radius: 4,
+          radius: 10,
           fill: new ol.style.Fill({color: "red"}),
           stroke: new ol.style.Stroke({color: 'red', width: 1})
         });
 
         var styles = {
-          'Point': new ol.style.Style({
-            image: image
-          }),
           'LineString': new ol.style.Style({
             stroke: new ol.style.Stroke({
               color: 'red',
@@ -123,10 +120,35 @@ Displays a full bleed openlayers map
           features: (new ol.format.GeoJSON()).readFeatures(this.features, {featureProjection: 'EPSG:3857'})
         });
 
-        var styleFunction = function(feature) {
-          return styles[feature.getGeometry().getType()];
-        };
+        var styleFunction = (function(feature) {
+          if(feature.getGeometry().getType() === "Point") {
+            if(!feature.getProperties().marker) {
+              var featureIndex = _.findIndex(this.features.features, {properties: { id: feature.getProperties().id }});
 
+              return new ol.style.Style({
+                image: image,
+                text: new ol.style.Text({
+                    font: 'bold 12px roboto, sans-serif',
+                    text: featureIndex.toString(),
+                    fill: new ol.style.Fill({ color: "white" })
+                }),
+              });
+            } else {
+              return new ol.style.Style({
+                image: image,
+                text: new ol.style.Text({
+                    font: "bold 12px 'Material Icons', sans-serif",
+                    text: ,
+                    fill: new ol.style.Fill({ color: "white" })
+                }),
+              });
+            }
+
+
+          }
+
+          return styles[feature.getGeometry().getType()];
+        }).bind(this);
 
         this.map.removeLayer(this.featuresLayer);
         this.featuresLayer = new ol.layer.Vector({
@@ -135,17 +157,15 @@ Displays a full bleed openlayers map
         });
         this.map.addLayer(this.featuresLayer);
 
-        this.updateImageData();
+        this.addGeolocationLayer();
       },
 
       recenterMap: function(position) {
         if(!this.map || !this.position) return;
 
+        var view;
         var coords = [this.position.coords.longitude, this.position.coords.latitude];
-        var projection = ol.proj.fromLonLat([
-          this.position.coords.longitude,
-          this.position.coords.latitude
-        ]);
+        var projection = ol.proj.fromLonLat(coords);
 
         var calculatedExtent = [
           projection[0] + (projection[0] * 0.000075), // west
@@ -154,13 +174,23 @@ Displays a full bleed openlayers map
           projection[1] + (projection[1] * 0.0001)   // north
         ];
 
-        var view = new ol.View({
-          center: projection,
-          zoom: this.zoom,
-          extent: calculatedExtent,
-          minZoom: 2,
-          maxZoom: this.maxZoom
-        });
+        if(this.map.getView().getCenter() === null) {
+          view = new ol.View({
+            center: projection,
+            zoom: this.zoom,
+            extent: calculatedExtent,
+            minZoom: 2,
+            maxZoom: this.maxZoom
+          });
+        } else {
+          view = new ol.View({
+            center: this.map.getView().getCenter(),
+            zoom: this.zoom,
+            extent: calculatedExtent,
+            minZoom: 2,
+            maxZoom: this.maxZoom
+          });
+        }
 
         this.map.setView(view);
 
@@ -168,12 +198,13 @@ Displays a full bleed openlayers map
       },
 
       addGeolocationLayer: function() {
+        if(!this.position) return;
+
         var image = new ol.style.Circle({
           radius: 3,
           fill: new ol.style.Fill({color: "#0032bd"}),
           stroke: new ol.style.Stroke({color: '#0032bd', width: 1})
         });
-        console.log(this.position.coords);
 
         var iconFeature = new ol.Feature({
           geometry: new ol.geom.Point(ol.proj.transform([
@@ -219,18 +250,23 @@ Displays a full bleed openlayers map
         });
 
         this.map.on("moveend", (function() {
-          this.updateImageData();
+          this.fire('move-end', ol.proj.transform(this.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326'));
         }).bind(this));
 
         this.map.on("click",
           (function(e) {
             this.map.forEachFeatureAtPixel(e.pixel,
               function (feature, layer) {
-                this.fire("marker-tap", feature);
+                var coordinates = ol.proj.transform(feature.getGeometry().getCoordinates(), 'EPSG:3857', 'EPSG:4326');
+
+                this.fire("marker-tap", {
+                  feature: feature,
+                  coordinates: coordinates
+                });
             }.bind(this))
           }).bind(this));
 
-        // Fix for Firefox and other browsers that require a window resize event
+        // Fix for Firefox and other browsers that for some reason require a window resize event
         setTimeout((function() {
           this.map.updateSize();
         }).bind(this), 200);
@@ -239,9 +275,6 @@ Displays a full bleed openlayers map
       ready: function() {
         // window.addEventListener('WebComponentsReady', this._initMap.bind(this));
         this._initMap();
-      },
-      markerTap: function () {
-        this.fire ('markerTap');
       }
     });
   </script>
