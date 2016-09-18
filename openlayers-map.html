@@ -142,13 +142,33 @@ Displays a full bleed openlayers map
         if(!this.map || !this.position) return;
 
         var coords = [this.position.coords.longitude, this.position.coords.latitude];
-        this.map.getView().setCenter(ol.proj.fromLonLat(coords));
+        var projection = ol.proj.fromLonLat([
+          this.position.coords.longitude,
+          this.position.coords.latitude
+        ]);
 
-        this.updateImageData();
+        var calculatedExtent = [
+          projection[0] + (projection[0] * 0.000075), // west
+          projection[1] - (projection[1] * 0.0001), // south
+          projection[0] - (projection[0] * 0.000075),  // east
+          projection[1] + (projection[1] * 0.0001)   // north
+        ];
+        console.log(calculatedExtent);
+
+        var view = new ol.View({
+          center: projection,
+          zoom: this.zoom,
+          extent: calculatedExtent,
+          minZoom: 2,
+          maxZoom: this.maxZoom
+        });
+
+        this.map.setView(view);
       },
 
       _initMap: function() {
         this.$.map.style.height = window.innerHeight + 'px';
+
 
         this.map = new ol.Map({
           // renderer:'canvas',
@@ -164,22 +184,7 @@ Displays a full bleed openlayers map
               pointer: false,
               select: false
           }),
-          layers: [],
-          view: new ol.View({
-            center: ol.proj.fromLonLat([
-              this.position.coords.longitude,
-              this.position.coords.latitude
-            ]),
-            zoom: this.zoom,
-            minZoom: 2,
-            // extent: [
-            //   this.position.coords.longitude,
-            //   this.position.coords.latitude,
-            //   this.position.coords.longitude,
-            //   this.position.coords.latitude
-            // ],
-            maxZoom: this.maxZoom
-          })
+          layers: []
         });
 
         this.map.on("moveend", (function() {
