@@ -74,6 +74,27 @@ Displays a full bleed openlayers map
         "tileSelection(stamenMap)"
       ],
 
+      getMDILigature: function(miLigature) {
+        switch (miLigature) {
+          default:
+          case "directions_walk":
+            return "\uF583"; // MDI: Walk
+          break;
+          case "directions_run":
+            return "\uF46E"; // MDI: Run
+          break;
+          case "place":
+            return "\uF5F8"; // MDI:Map Marker
+          break;
+          case "local_bar":
+            return "\uF356"; // MDI:Martini
+          break;
+          case "local_cafe":
+            return "\uF176"; // MDI:Coffee
+          break;
+        }
+      },
+
       tileSelection: function(stamenMap ) {
         if(!this.map) return;
 
@@ -136,12 +157,13 @@ Displays a full bleed openlayers map
               });
             } else {
               var sanitizedMarker = feature.getProperties().marker.split(':')[1].replace('-', '_');
+              var mdiSanitizedMarker = this.getMDILigature(sanitizedMarker);
 
               return new ol.style.Style({
                 image: image,
                 text: new ol.style.Text({
-                    font: "normal 12px 'Material Icons', sans-serif",
-                    text: sanitizedMarker ,
+                    font: "normal 12px 'Material Design Icons', sans-serif",
+                    text: mdiSanitizedMarker,
                     fill: new ol.style.Fill({ color: "white" })
                 }),
               });
