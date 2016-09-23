@@ -8,7 +8,7 @@ Displays a full bleed openlayers map
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="openlayers-import.html">
 <link rel="import" href="stamen-import.html">
-<link rel="stylesheet" href="../mdi/css/materialdesignicons.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
 
 <dom-module id="openlayers-map">
   <template>
@@ -75,28 +75,28 @@ Displays a full bleed openlayers map
       ],
 
       /**
-       * Return a MDI ligature for a MI ligature.
+       * Return a MDIF ligature for a MI ligature.
        *
        * miLigature: String: Material Icons's ligature. (See https://github.com/google/material-design-icons).
-       * Return: String: Material Design Icon's ligature. (See https://github.com/Templarian/MaterialDesign).
+       * Return: String: Material Design Iconic Font's ligature. (See https://github.com/zavoloklom/material-design-iconic-font).
        */
-      getMDILigature: function(miLigature) {
+      getMDIFLigature: function(miLigature) {
         switch (miLigature) {
           default:
           case "directions_walk":
-            return "\uF583"; // MDI: Walk
+            return "\uF216"; // MDIF: Walk
           break;
           case "directions_run":
-            return "\uF46E"; // MDI: Run
+            return "\uF215"; // MDIF: Run
           break;
           case "place":
-            return "\uF5F8"; // MDI:Map Marker
+            return "\uF1AB"; // MDIF: Pin
           break;
           case "local_bar":
-            return "\uF356"; // MDI:Martini
+            return "\uF137"; // MDIF: Cocktail
           break;
           case "local_cafe":
-            return "\uF176"; // MDI:Coffee
+            return "\uF13B"; // MDIF: Cafe
           break;
         }
       },
@@ -163,13 +163,13 @@ Displays a full bleed openlayers map
               });
             } else {
               var sanitizedMarker = feature.getProperties().marker.split(':')[1].replace('-', '_');
-              var mdiSanitizedMarker = this.getMDILigature(sanitizedMarker); // Get a MDI ligature for a MI ligature.
+              var mdifSanitizedMarker = this.getMDIFLigature(sanitizedMarker); // Get a MDIF ligature for a MI ligature.
 
               return new ol.style.Style({
                 image: image,
                 text: new ol.style.Text({
-                    font: "normal 12px 'Material Design Icons', sans-serif",
-                    text: mdiSanitizedMarker,
+                    font: "normal 12px Material-Design-Iconic-Font, sans-serif",
+                    text: mdifSanitizedMarker,
                     fill: new ol.style.Fill({ color: "white" })
                 }),
               });

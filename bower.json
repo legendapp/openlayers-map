@@ -4,8 +4,7 @@
   "main": "openlayers-map.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
-    "ol3": "openlayers3-dist#^3.17.1",
-    "mdi": "^1.7.22"
+    "ol3": "openlayers3-dist#^3.17.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
