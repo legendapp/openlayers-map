@@ -74,6 +74,12 @@ Displays a full bleed openlayers map
         "tileSelection(stamenMap)"
       ],
 
+      /**
+       * Return a MDI ligature for a MI ligature.
+       *
+       * miLigature: String: Material Icons's ligature. (See https://github.com/google/material-design-icons).
+       * Return: String: Material Design Icon's ligature. (See https://github.com/Templarian/MaterialDesign).
+       */
       getMDILigature: function(miLigature) {
         switch (miLigature) {
           default:
@@ -157,7 +163,7 @@ Displays a full bleed openlayers map
               });
             } else {
               var sanitizedMarker = feature.getProperties().marker.split(':')[1].replace('-', '_');
-              var mdiSanitizedMarker = this.getMDILigature(sanitizedMarker);
+              var mdiSanitizedMarker = this.getMDILigature(sanitizedMarker); // Get a MDI ligature for a MI ligature.
 
               return new ol.style.Style({
                 image: image,
