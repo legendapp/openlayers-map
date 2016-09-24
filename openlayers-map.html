@@ -199,9 +199,9 @@ Displays a full bleed openlayers map
         var projection = ol.proj.fromLonLat(coords);
 
         var calculatedExtent = [
-          projection[0] + (projection[0] * 0.000075), // west
+          projection[0] + (projection[0] * 0.000070), // west
           projection[1] - (projection[1] * 0.0001), // south
-          projection[0] - (projection[0] * 0.000075),  // east
+          projection[0] - (projection[0] * 0.000070),  // east
           projection[1] + (projection[1] * 0.0001)   // north
         ];
 
