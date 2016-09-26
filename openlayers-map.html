@@ -259,9 +259,12 @@ Displays a full bleed openlayers map
         this.map.addLayer(this.geolocationLayer);
       },
 
-      _initMap: function() {
+      rezizeMap: function() {
         this.$.map.style.height = window.innerHeight + 'px';
+      },
 
+      _initMap: function() {
+        this.rezizeMap();
 
         this.map = new ol.Map({
           // renderer:'canvas',
@@ -296,6 +299,11 @@ Displays a full bleed openlayers map
                 });
             }.bind(this))
           }).bind(this));
+
+        window.addEventListener("resize", (function() {
+          this.rezizeMap();
+          this.map.updateSize();
+        }).bind(this));
 
         // Fix for Firefox and other browsers that for some reason require a window resize event
         setTimeout((function() {
